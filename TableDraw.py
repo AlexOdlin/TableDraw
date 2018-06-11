@@ -8,7 +8,7 @@ class Table:
     def insert_row(self, elements):
         for i, elem in enumerate(elements):
             if len(str(elem)) > self.row_width[i]:
-                self.row_width[i] = len(elem)
+                self.row_width[i] = len(str(elem))
         diff = (len(self.header) - len(elements))
         if diff:
             elements += ['-'] * diff
