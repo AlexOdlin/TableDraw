@@ -5,14 +5,28 @@ class Table:
         self.row_width = [len(el) for el in header]
         self.header = header
 
-    def insert_row(self, elements):
-        for i, elem in enumerate(elements):
-            if len(str(elem)) > self.row_width[i]:
-                self.row_width[i] = len(str(elem))
-        diff = (len(self.header) - len(elements))
-        if diff:
-            elements += ['-'] * diff
-        self.rows.append(elements)
+    def insert_row(self, all_elements, pos=None):
+        if type(all_elements[0]) != list:
+            all_elements = [all_elements]
+        for elements in all_elements:
+            for i, elem in enumerate(elements):
+                if len(str(elem)) > self.row_width[i]:
+                    self.row_width[i] = len(str(elem))
+            diff = (len(self.header) - len(elements))
+            if diff:
+                elements += ['-'] * diff
+
+            if pos is not None:
+                try:
+                    int(pos)
+                except Exception:
+                    print('Incorrect index')
+                    exit()
+                else:
+                    if pos >= 0:
+                        self.rows.insert(pos, elements)
+            else:
+                self.rows.append(elements)
 
     def sort(self, column=0, reverse=False):
         self.rows = sorted(self.rows, key=lambda elem: elem[column], reverse=reverse)
@@ -21,16 +35,16 @@ class Table:
         styles = {'gothic': ['¤¤', '||', '='], 'default': ['+', '|', '-'], 'stars': ['/۩\\', '|||', '~']}
         plus = styles[style][0]
         vertical_border = styles[style][1]
-        gorizontal_border = styles[style][2]
+        horizontal_border = styles[style][2]
 
-        if sort_column != None:
+        if sort_column is not None:
             self.sort(sort_column, rev_sort)
         row_width = self.row_width if not enum else [len(str(len(self.rows)))] + self.row_width
         border_line = ''
         header_line = vertical_border
         header = self.header if not enum else ['N'] + self.header
         for i, elem in enumerate(row_width):
-            border_line += plus + gorizontal_border * (elem + 2)
+            border_line += plus + horizontal_border * (elem + 2)
             m = round(((elem - len(header[i]) + 2) / 2) - 0.1)
             n = round(((elem - len(header[i]) + 2) / 2) + 0.1)
             header_line += ' ' * m + header[i] + ' ' * n + vertical_border
